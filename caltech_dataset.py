@@ -36,7 +36,7 @@ class Caltech(VisionDataset):
                     self.images_dataset.append(img)
                     self.labels.append(label_tmp)
 
-        self.unique_labels = np.unique(self.labels)
+        self.unique_labels = list(dict.fromkeys(self.labels))
         for lab in self.labels:
             self.labels_indx.append(list(self.unique_labels).index(lab))
 
