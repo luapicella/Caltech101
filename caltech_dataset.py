@@ -20,6 +20,25 @@ class Caltech(VisionDataset):
 
         self.split = split # This defines the split you are going to use
                            # (split files are called 'train.txt' and 'test.txt')
+        self.images_dataset = []
+        self.labels = []
+        self.labels_indx = []
+        self.unique_labels = []
+
+        file_path = "Caltech101" + "/" + self.split + ".txt"
+        print (file_path)
+        with open(file_path, "r" ) as fp:
+            for line in fp:
+                row = line.strip("\n")
+                label_tmp = row.split("/")[0]
+                if (label_tmp != "BACKGROUND_Google"):
+                    img = pil_loader(root + "/" + row)
+                    self.images_dataset.append(img)
+                    self.labels.append(label_tmp)
+
+        self.unique_labels = np.unique(self.labels)
+        for lab in self.labels:
+            self.labels_indx.append(list(self.unique_labels).index(lab))
 
         '''
         - Here you should implement the logic for reading the splits files and accessing elements
@@ -40,9 +59,7 @@ class Caltech(VisionDataset):
             tuple: (sample, target) where target is class_index of the target class.
         '''
 
-        image, label = ... # Provide a way to access image and label via index
-                           # Image should be a PIL Image
-                           # label can be int
+        image, label =   self.images_dataset[index], self.labels_indx[index]
 
         # Applies preprocessing when accessing the image
         if self.transform is not None:
@@ -55,5 +72,5 @@ class Caltech(VisionDataset):
         The __len__ method returns the length of the dataset
         It is mandatory, as this is used by several other components
         '''
-        length = ... # Provide a way to get the length (number of elements) of the dataset
+        length = len(self.images_dataset)
         return length
